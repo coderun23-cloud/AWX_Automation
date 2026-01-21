@@ -6,16 +6,16 @@
 
   tasks:
     # Task 1: Show current hostname
-    - name: Get current hostname
-      ios_command:
-        commands:
-          - show running-config | include hostname
-      register: current_hostname
+    #- name: Get current hostname
+      #ios_command:
+     #   commands:
+    #      - show running-config | include hostname
+   #   register: current_hostname
 
     # Task 2: Display current hostname
-    - name: Display current device hostname
-      debug:
-        msg: "Current hostname: {{ current_hostname.stdout[0] | default('Not set') }}"
+  #  - name: Display current device hostname
+ #     debug:
+#        msg: "Current hostname: {{ current_hostname.stdout[0] | default('Not set') }}"
 
     # Task 3: Prompt for new hostname
     - name: Prompt for new hostname
