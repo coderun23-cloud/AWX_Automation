@@ -2,22 +2,18 @@
 - name: Interactive Hostname Configuration
   hosts: access_point
   gather_facts: no
-  connection: network_cli
 
   tasks:
-    # Task 1: Show current hostname
-    #- name: Get current hostname
-      #ios_command:
-     #   commands:
-    #      - show running-config | include hostname
-   #   register: current_hostname
+    - name: Get current hostname
+      cisco.ios.ios_command:
+        commands:
+          - show running-config | include hostname
+      register: current_hostname
 
-    # Task 2: Display current hostname
-  #  - name: Display current device hostname
- #     debug:
-#        msg: "Current hostname: {{ current_hostname.stdout[0] | default('Not set') }}"
+    - name: Display current device hostname
+      debug:
+        msg: "Current hostname: {{ current_hostname.stdout[0] | default('Not set') }}"
 
-    # Task 3: Prompt for new hostname
     - name: Prompt for new hostname
       pause:
         prompt: |
@@ -28,23 +24,20 @@
           ========================================
       register: user_input
 
-    # Task 4: Set new hostname if provided
     - name: Configure new hostname
       when: user_input.user_input | length > 0
-      ios_config:
+      cisco.ios.ios_config:
         lines:
           - hostname {{ user_input.user_input }}
       register: config_change
 
-    # Task 5: Verify new hostname was set
     - name: Verify new hostname
       when: user_input.user_input | length > 0
-      ios_command:
+      cisco.ios.ios_command:
         commands:
           - show running-config | include hostname
       register: new_hostname
 
-    # Task 6: Display result
     - name: Show configuration result
       debug:
         msg: |
@@ -54,5 +47,3 @@
           New: {{ new_hostname.stdout[0] | default('No change made') }}
           Status: {{ 'Changed successfully' if user_input.user_input | length > 0 else 'No change - kept original' }}
           ========================================
-
-
